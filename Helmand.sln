@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29424.173
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helmand", "Helmand\Helmand.csproj", "{C862AB64-5110-4BED-8F12-83534F92EDAF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C862AB64-5110-4BED-8F12-83534F92EDAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C862AB64-5110-4BED-8F12-83534F92EDAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C862AB64-5110-4BED-8F12-83534F92EDAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C862AB64-5110-4BED-8F12-83534F92EDAF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {ED1E72F9-0C51-40C0-B5BE-99D3C3967CD6}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,27 @@
+﻿@model Category
+@{
+    ViewData["Title"] = "EditCategory";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<br />
+<div class="panel-body content-form" style="width:600px; margin: auto">
+    <h3 style="margin-bottom: 30px">Edit Category</h3>
+    <form class="P" asp-action="EditCategory" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger">  </div>
+        <div class="form-group">
+            <label asp-for="Name">Category Name:</label>
+            <div><span asp-validation-for="Name" class="text-danger"></span></div>
+            <input class="form-control" asp-for="Name" />
+        </div>
+        <div class="form-group row">
+            <div class="col-5 offset-4">
+                <input type="submit" class="btn btn-dark form-control" asp-route-id="@Model.Id" value="Update" />
+                <br />
+                <a asp-action="Index" class="btn btn-dark form-control">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>
+

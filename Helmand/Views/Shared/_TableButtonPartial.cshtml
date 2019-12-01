@@ -1,0 +1,9 @@
+﻿@model int
+ 
+        <a asp-action="EditCategory" asp-route-Id="@Model" class="btn btn-outline-dark ">
+            <i class="fas fa-pen"></i>
+        </a>
+        <a asp-action="DeleteCategory" asp-controller="Category" asp-route-Id="@Model" class="btn btn-outline-dark">
+            <i class="far fa-trash-alt"></i>
+        </a>
+ 

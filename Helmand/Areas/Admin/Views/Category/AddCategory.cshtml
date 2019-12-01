@@ -1,0 +1,24 @@
+﻿@model Category
+@{
+    ViewData["Title"] = "AddCategory";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+    <br /><br />
+
+  <div class="panel-body content-form" style="width:600px; margin: auto">
+      <h3 style="margin-bottom: 30px">Add Category</h3>
+    <form class="P" asp-action="AddCategory" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger">  </div>
+            <div class="form-group">
+                <label asp-for="Name">Category Name:</label>
+                <div><span asp-validation-for="Name" class="text-danger"></span></div>
+                <input class="form-control" asp-for="Name" />
+            </div>
+            <div class="text-center">
+                <button class="btn btn-dark" type="submit"><i class="fas fa-plus"></i> Add</button>
+                <a asp-action="Index" class="btn btn-dark">Cancel</a>
+          
+        </div>
+    </form>
+</div>
