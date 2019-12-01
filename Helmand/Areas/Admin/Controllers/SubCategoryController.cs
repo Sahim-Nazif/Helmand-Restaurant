@@ -6,6 +6,7 @@ using Helmand.Data;
 using Helmand.Models;
 using Helmand.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace Helmand.Areas.Admin.Controllers
@@ -54,7 +55,7 @@ namespace Helmand.Areas.Admin.Controllers
                 var doesSubCategoryExists = _db.SubCategory.Include(s => s.Category).Where(s => s.SubCName == model.SubCategory.SubCName && s.Category.Id == model.SubCategory.CategoryId);
                 if (doesSubCategoryExists.Count()>0)
                 {
-                    StatusMessage = "Error : Sub Category exists under" + doesSubCategoryExists.First().Category.Name + " Please another name";
+                    StatusMessage = "Error : Sub Category already exists under " + doesSubCategoryExists.First().Category.Name + " category.";
                 }
                 else
                 {
@@ -75,5 +76,17 @@ namespace Helmand.Areas.Admin.Controllers
 
             return View(modelVM);
         }
+
+        [ActionName("GetSubCategory")]
+        public async Task<IActionResult> GetSubCategory(int id)
+        {
+            List<SubCategory> subCategories = new List<SubCategory>();
+
+            subCategories = await (from subCategory in _db.SubCategory
+                             where subCategory.CategoryId == id
+                             select subCategory).ToListAsync();
+            return Json(new SelectList(subCategories, "SubCId", "SubCName"));
+        }
+        
     }
 }
