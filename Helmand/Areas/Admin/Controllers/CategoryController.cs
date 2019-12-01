@@ -27,10 +27,8 @@ namespace Helmand.Areas.Admin.Controllers
         }
 
         //the method to retreive the view for AddCategory page
-        public IActionResult AddCategory()
-        {
-              return View();
-        }
+        public IActionResult AddCategory()=> View();
+        
 
         //Post- Add-Category method
         [HttpPost]

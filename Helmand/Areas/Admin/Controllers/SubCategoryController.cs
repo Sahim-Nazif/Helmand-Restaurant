@@ -14,6 +14,8 @@ namespace Helmand.Areas.Admin.Controllers
     public class SubCategoryController : Controller
     {
         private readonly ApplicationDbContext _db;
+        [TempData]
+        public string StatusMessage { get; set; }
 
         public SubCategoryController(ApplicationDbContext db)
         {
@@ -39,16 +41,20 @@ namespace Helmand.Areas.Admin.Controllers
         };
         return View(model);
     }
+        //Post method for creating or adding sub category
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult>AddSubCategory(SubCategoryAndCategoryViewModel model)
         {
+
+            //ModelState is a property of controller that is used for validating form in server side
+            //for instance to check if inputs meets the validation
             if (ModelState.IsValid)
             {
                 var doesSubCategoryExists = _db.SubCategory.Include(s => s.Category).Where(s => s.SubCName == model.SubCategory.SubCName && s.Category.Id == model.SubCategory.CategoryId);
                 if (doesSubCategoryExists.Count()>0)
                 {
-                    //errro
+                    StatusMessage = "Error : Sub Category exists under" + doesSubCategoryExists.First().Category.Name + " Please another name";
                 }
                 else
                 {
@@ -57,11 +63,14 @@ namespace Helmand.Areas.Admin.Controllers
                     return RedirectToAction(nameof(Index));
                 }
             }
+           
+      //now if the model state is now valid we will do the following
             SubCategoryAndCategoryViewModel modelVM = new SubCategoryAndCategoryViewModel()
             {
                 CategoryList = await _db.Category.ToListAsync(),
                 SubCategory=model.SubCategory,
-                SubCategoryList= await _db.SubCategory.OrderBy(p=>p.SubCName).Select(p=>p.SubCName).ToListAsync()
+                SubCategoryList= await _db.SubCategory.OrderBy(p=>p.SubCName).Select(p=>p.SubCName).ToListAsync(),
+                StatusMessage= StatusMessage
             };
 
             return View(modelVM);

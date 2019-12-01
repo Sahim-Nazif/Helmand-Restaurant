@@ -10,43 +10,48 @@
 
 <h3>Add Sub Category</h3>
 <br />
-<div class="col-8 border-right">
-    <form  asp-action="AddSubCategory" method="post">
-        <div asp-validation-summary="ModelOnly" class="text-danger">  </div>
-        <div class="form-group row">
-            <div class="col-3">
-              <label asp-for="SubCategory.CategoryId"></label>
+<div class="row">
+
+    <div class="col-8 border-right">
+        <form asp-action="AddSubCategory" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger">  </div>
+            <div class="form-group row">
+                <div class="col-3">
+                    <label asp-for="SubCategory.CategoryId"></label>
+                </div>
+                <div class="col-5">
+                    <select id="ddlCategorylist" asp-for="SubCategory.CategoryId" asp-items="Model.CategoryList.ToSelectListItem(Model.SubCategory.CategoryId)" class="form-control"></select>
+                </div>
             </div>
-            <div class="col-5">
-                <select id="ddlCategorylist" asp-for="SubCategory.CategoryId" asp-items="Model.CategoryList.ToSelectListItem(Model.SubCategory.CategoryId)" class="form-control"></select>
+            <div class="form-group row">
+                <div class="col-3">
+                    <label asp-for="SubCategory.SubCName">Sub Category Name</label>
+                </div>
+                <div class="col-5">
+                    <input class="form-control" asp-for="SubCategory.SubCName" />
+                </div>
+                <div><span asp-validation-for="SubCategory.SubCName" class="text-danger"></span></div>
+
             </div>
-        </div>
-        <div class="form-group row">
-            <div class="col-3">
-                <label asp-for="SubCategory.SubCName">Sub Category Name</label>
+            <div class="form-group row">
+                <div class="col-5 offset-3">
+                    <button class="btn btn-dark" type="submit"><i class="fas fa-plus"></i> Add</button>
+                    <a asp-action="Index" class="btn btn-dark">Cancel</a>
+                </div>
             </div>
-            <div class="col-5">
-                <input class="form-control" asp-for="SubCategory.SubCName" />
+        </form>
+    </div>
+
+    <div class="col-3 offset-1">
+        @if (Model.SubCategoryList.Count() > 0)
+        {
+            <p>Existing Sub Categories</p>
+            <div id="SubCategoryList">
+                <ul class="list-group"></ul>
             </div>
-            <div><span asp-validation-for="SubCategory.SubCName" class="text-danger"></span></div>
-           
-        </div>
-        <div class="form-group row">
-            <div class="col-5 offset-3">
-            <button class="btn btn-dark" type="submit"><i class="fas fa-plus"></i> Add</button>
-            <a asp-action="Index" class="btn btn-dark">Cancel</a>
-           </div>
-        </div>
-    </form>
-</div>
-<div class="col-3 offset-1">
-    @if (Model.SubCategoryList.Count() > 0)
-    {
-        <p>Existing Sub Categories</p>
-        <div id="SubCategoryList">
-            <ul class="list-group"></ul>
-        </div>
-    }
+        }
+
+    </div>
 
 </div>
 
