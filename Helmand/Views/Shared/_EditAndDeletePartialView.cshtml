@@ -1,0 +1,10 @@
+﻿
+@model int
+
+<a asp-action="EditSubcategory" asp-route-Id="@Model" class="btn btn-outline-dark ">
+    <i class="fas fa-pen"></i>
+</a>
+<a asp-action="DeleteSubCategory" asp-controller="SubCategory" asp-route-Id="@Model" class="btn btn-outline-dark">
+    <i class="far fa-trash-alt"></i>
+</a>
+

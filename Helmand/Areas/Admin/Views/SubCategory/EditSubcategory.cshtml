@@ -1,0 +1,90 @@
+﻿@model Helmand.Models.ViewModels.SubCategoryAndCategoryViewModel
+@using Helmand.Extensions
+@{
+    ViewData["Title"] = "EditSubcategory";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<br />
+
+<h3>Edit Sub Category</h3>
+<br />
+<partial name="_StatusMessage" model="Model.StatusMessage" />
+<div class="row">
+
+    <div class="col-8 border-right">
+        <form asp-action="EditSubcategory" method="post">
+            <input type="hidden" asp-for="SubCategory.CategoryId" />
+            <input type="hidden" asp-for="SubCategory.SubCId" />
+            <div asp-validation-summary="ModelOnly" class="text-danger">  </div>
+            <div class="form-group row">
+                <div class="col-3">
+                    <label asp-for="SubCategory.CategoryId"></label>
+                </div>
+                <div class="col-5">
+                    <select id="ddlCategorylist" asp-for="SubCategory.CategoryId" disabled asp-items="Model.CategoryList.ToSelectListItem(Model.SubCategory.CategoryId)" class="form-control"></select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-3">
+                    <label asp-for="SubCategory.SubCName">Sub Category Name</label>
+                </div>
+                <div class="col-5">
+                    <input class="form-control" asp-for="SubCategory.SubCName" />
+                </div>
+                <div><span asp-validation-for="SubCategory.SubCName" class="text-danger"></span></div>
+
+            </div>
+            <div class="form-group row">
+                <div class="col-5 offset-3">
+                    @*<button class="btn btn-dark" type="submit" asp-route-id="@Model.SubCategory.SubCId" value="Update">Update</button>*@
+                    <input type="submit" class="btn btn-dark form-control" asp-route-id="@Model.SubCategory.SubCId" value="Update" />
+                    <a asp-action="Index" class="btn btn-dark">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="col-3 offset-1">
+        @if (Model.SubCategoryList.Count() > 0)
+        {
+            <p>Existing Sub Categories</p>
+            <div id="SubCategoryList">
+                <ul class="list-group"></ul>
+            </div>
+        }
+
+    </div>
+
+</div>
+
+@section Scripts{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial.cshtml");}
+
+    <script>
+    function updateSubcategoryList() {
+        var categorySelected = document.getElementById("ddlCategorylist").value;
+        $list = $('#SubCategoryList');
+        $.ajax({
+            url: '/Admin/SubCategory/GetSubCategory/' + categorySelected,
+            type: 'Get',
+            dataType: 'text',
+            success: function (data) {
+                results = JSON.parse(data);
+                $list.html('');
+                $list.append('<ul class="list-group">');
+                for (i in results) {
+                    $list.append('<li class="list-group-item">' + results[i].text + '</li>');
+                }
+                $list.append('</ul>');
+            }
+        });
+    }
+    $(document).ready(function () {
+        updateSubcategoryList();
+    });
+ 
+    </script>
+
+}
