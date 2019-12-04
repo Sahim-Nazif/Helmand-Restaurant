@@ -157,36 +157,24 @@ namespace Helmand.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> DeleteSubCategory(int? id)
         {
-            SubCategoryAndCategoryViewModel model = new SubCategoryAndCategoryViewModel()
-            {
-                CategoryList = await _db.Category.ToListAsync(),
-                SubCategory = new Models.SubCategory(),
-                SubCategoryList = await _db.SubCategory.OrderBy(p => p.SubCName).Select(p => p.SubCName).Distinct().ToListAsync(),
-            };
-
-            if (id == null)
+            var subcategory = await _db.SubCategory.Include(s => s.Category).SingleOrDefaultAsync(m => m.SubCId == id);
+            if (subcategory == null)
             {
                 return NotFound();
             }
-            var subCategory = await _db.SubCategory.FindAsync(id);
-            if (subCategory == null)
-            {
-                return NotFound();
-            }
-            return View(model);
+            return View(subcategory);
 
         }
+
+
         //Post-Delete Action method
 
         [HttpPost, ActionName("DeleteSubCategory")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteSubCategoryConfirmed(int? id)
         {
-            var subCategory = await _db.SubCategory.FindAsync(id);
-            if (subCategory == null)
-            {
-                return View();
-            }
+            var subCategory = await _db.SubCategory.SingleOrDefaultAsync(m=>m.SubCId==id);
+           
             _db.SubCategory.Remove(subCategory);
             await _db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
