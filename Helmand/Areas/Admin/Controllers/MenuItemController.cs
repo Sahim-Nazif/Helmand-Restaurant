@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Helmand.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Helmand.Areas.Admin.Controllers
 {
@@ -20,9 +21,10 @@ namespace Helmand.Areas.Admin.Controllers
             _db = db;
             _webHostEnvironment = webHostEnvironment;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var menuitems = await _db.MenuItem.Include(m=>m.Category).Include(m=>m.SubCategory).ToListAsync();
+            return View(menuitems);
         }
     }
 }
