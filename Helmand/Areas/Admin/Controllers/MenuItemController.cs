@@ -90,8 +90,66 @@ namespace Helmand.Areas.Admin.Controllers
             }
             await _db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
 
+        //Editing menu-item 
 
+        public async Task<IActionResult> EditMenuItem(int ? id)
+        {
+          if (id==null)
+            {
+                return NotFound();
+            }
+            MenuItemVM.MenuItem = await _db.MenuItem.Include(m => m.Category).Include(m => m.SubCategory).SingleOrDefaultAsync(m => m.Id == id);
+                {
+                return View(MenuItemVM);
+            }
+        }
+
+        //Get-Post Action method for menut Item
+        [HttpPost, ActionName("EditMenuItem")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditMenuItemPost(int? id)
+        {
+            if(id==null)
+            {
+                return NotFound();
+            }
+            MenuItemVM.MenuItem.SubCategoryId = Convert.ToInt32(Request.Form["SubCategoryId"].ToString());
+            if (!ModelState.IsValid)
+            {
+                return View(MenuItemVM);
+            }
+            _db.MenuItem.Add(MenuItemVM.MenuItem);
+            await _db.SaveChangesAsync();
+            //here we have to work on how to save image
+
+            string webRootPath = _webHostEnvironment.WebRootPath;
+
+            var files = HttpContext.Request.Form.Files;
+            var menuItemFromDb = await _db.MenuItem.FindAsync(MenuItemVM.MenuItem.Id);
+            if (files.Count > 0)
+            {
+                //files has been uploaded
+
+                var uploads = Path.Combine(webRootPath, "images");
+                var extension = Path.GetExtension(files[0].FileName);
+                using (var filesStream = new FileStream(Path.Combine(uploads, MenuItemVM.MenuItem.Id + extension), FileMode.Create))
+                {
+                    files[0].CopyTo(filesStream);
+                }
+                menuItemFromDb.Image = @"\images\" + MenuItemVM.MenuItem.Id + extension;
+            }
+            else
+            {
+                //if no file was uploaded
+                var uploads = Path.Combine(webRootPath, @"images\" + SD.DefaultFoodImage);
+                System.IO.File.Copy(uploads, webRootPath + @"\images\" + MenuItemVM.MenuItem.Id + ".png");
+                menuItemFromDb.Image = @"\images\" + MenuItemVM.MenuItem.Id + ".png";
+
+            }
+            await _db.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
     }
