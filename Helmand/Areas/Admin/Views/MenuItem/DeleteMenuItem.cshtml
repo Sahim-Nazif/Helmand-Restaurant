@@ -1,0 +1,101 @@
+﻿@model Helmand.Models.ViewModels.MenuItemViewModel
+
+@{
+    ViewData["Title"] = "DeleteMenuItem";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<br />
+
+
+<h3 style="margin-bottom: 30px">Delete Menu Item</h3>
+<form asp-action="AddMenuItem" method="post" enctype="multipart/form-data">
+    <div class="row">
+         <input type="hidden" asp-for="MenuItem.Id" />
+         <div class="col-8">
+             <fieldset disabled>
+                 <div class="form-group row">
+                     <div class="col-4">
+                         <label asp-for="MenuItem.Name">Menu Item Name:</label>
+                     </div>
+                     <div class="col-8">
+                         <input class="form-control" asp-for="MenuItem.Name" />
+                     </div>
+                 </div>
+                 <div class="form-group row">
+                     <div class="col-4">
+                         <label asp-for="MenuItem.Description">Description:</label>
+                     </div>
+                     <div class="col-8">
+                         @Html.TextAreaFor(m => m.MenuItem.Description)
+                     </div>
+                 </div>
+                 <div class="form-group row">
+                     <div class="col-4">
+                         <label asp-for="MenuItem.Price">Price:</label>
+                     </div>
+                     <div class="col-8">
+                         <input class="form-control" asp-for="MenuItem.Price" />
+                     </div>
+                 </div>
+                 <div class="form-group row">
+                     <div class="col-4">
+                         <label asp-for="MenuItem.CategoryId"></label>
+                     </div>
+                     <div class="col-8">
+                         <input class="form-control" asp-for="MenuItem.Category.Name" />
+                     </div>
+                 </div>
+                 <div class="form-group row">
+                     <div class="col-4">
+                         <label asp-for="MenuItem.SubCategoryId"></label>
+                     </div>
+                     <div class="col-8">
+                         <input class="form-control" asp-for="MenuItem.SubCategory.SubCName" />
+                     </div>
+                 </div>
+                 <div class="form-group row">
+                     <div class="col-4">
+                         <label asp-for="MenuItem.Spiciness"></label>
+                     </div>
+                     <div class="col-8">
+                         <select asp-for="MenuItem.Spiciness" asp-items="Html.GetEnumSelectList<MenuItem.Espciy>()" class="form-control"></select>
+                     </div>
+
+                 </div>
+             </fieldset>
+         </div>
+
+            <div class="col-3 offset-1">
+                <img src="@Model.MenuItem.Image" width="100%" style="border-radius:5px; border:1px solid #bbb9b9;" />
+            </div>
+
+            <div class="col-8">
+                <div class="col-8 offset-4">
+                    <button class="btn btn-dark" asp-route-id="@Model.MenuItem.Id" type="submit">Delete</button>
+                    <a asp-action="Index" class="btn btn-dark">Cancel</a>
+                </div>
+
+            </div>
+     
+    </div>
+</form>
+
+
+@section scripts{
+    <script>
+    tinymce.init({
+        selector: "textarea",
+        plugins: "lists",
+        menubar: "file edit",
+        readonly:1
+
+    });
+    </script>
+
+
+}
+
+
+

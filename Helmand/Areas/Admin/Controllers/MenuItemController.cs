@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Helmand.Data;
+using Helmand.Models;
 using Helmand.Models.ViewModels;
 using Helmand.Utility;
 using Microsoft.AspNetCore.Hosting;
@@ -172,7 +173,13 @@ namespace Helmand.Areas.Admin.Controllers
 
         public async Task<IActionResult> DeleteMenuItem(int? id)
         {
-            MenuItemVM.MenuItem = await _db.MenuItem.Include(s => s.CategoryId).Include(s => s.SubCategoryId).SingleOrDefaultAsync(m=>m.Id==id);
+           
+
+            if (id== null)
+            {
+                return NotFound();
+            }
+            MenuItemVM.MenuItem = await _db.MenuItem.Include(m => m.Category).Include(m=> m.SubCategory).SingleOrDefaultAsync(m=> m.Id == id);
             if (MenuItemVM.MenuItem==null)
             {
                 return NotFound();
@@ -180,5 +187,29 @@ namespace Helmand.Areas.Admin.Controllers
             return View(MenuItemVM);
         }
 
+        //Post Delete Action method
+
+            [HttpPost,ActionName("DeleteMenuItem")]
+            [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteMenuItemPost(int id)
+        {
+            string webRootPath = _webHostEnvironment.WebRootPath;
+            MenuItem menuItem = await _db.MenuItem.FindAsync(id);
+
+            if (menuItem != null)
+            {
+                var imagePath = Path.Combine(webRootPath, menuItem.Image.TrimStart('\\'));
+
+                if (System.IO.File.Exists(imagePath))
+                {
+                    System.IO.File.Delete(imagePath);
+                }
+                _db.MenuItem.Remove(menuItem);
+                await _db.SaveChangesAsync();
+
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
