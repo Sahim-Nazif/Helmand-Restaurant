@@ -100,10 +100,17 @@ namespace Helmand.Areas.Admin.Controllers
             {
                 return NotFound();
             }
+          //here we will retrieve the menu item
             MenuItemVM.MenuItem = await _db.MenuItem.Include(m => m.Category).Include(m => m.SubCategory).SingleOrDefaultAsync(m => m.Id == id);
-                {
-                return View(MenuItemVM);
+            MenuItemVM.SubCategory = await _db.SubCategory.Where(s => s.CategoryId == MenuItemVM.MenuItem.CategoryId).ToListAsync();
+            if (MenuItemVM.MenuItem==null)
+            {
+                return NotFound();
             }
+
+            
+                return View(MenuItemVM);
+          
         }
 
         //Get-Post Action method for menut Item
@@ -120,8 +127,7 @@ namespace Helmand.Areas.Admin.Controllers
             {
                 return View(MenuItemVM);
             }
-            _db.MenuItem.Add(MenuItemVM.MenuItem);
-            await _db.SaveChangesAsync();
+         
             //here we have to work on how to save image
 
             string webRootPath = _webHostEnvironment.WebRootPath;
