@@ -24,9 +24,11 @@ namespace Helmand.Models
         public virtual Category Category { get; set; }
 
         [Display(Name = "SubCategory")]
-        public int SubCategoryId { get; set; }
+         public int SubCategoryId { get; set; }
+        [ForeignKey("SubCategoryId")]
         public virtual SubCategory SubCategory { get; set; }
         [Range(1,int.MaxValue,ErrorMessage ="Price should be greater than ${1}")]
+        [DataType(DataType.Currency)]
         public double Price { get; set; }
 
 
