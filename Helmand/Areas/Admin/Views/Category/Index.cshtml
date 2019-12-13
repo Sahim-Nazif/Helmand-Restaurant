@@ -9,10 +9,9 @@
 <div class="row">
     <div class="col-6">
         <h3 class="text-info"> Category List</h3>
-
     </div>
     <div class="col-6 text-right">
-        <a asp-action="AddCategory" class="btn btn-outline-dark categoryButton "><i class="fas fa-plus"></i> Add Category</a>
+       <a href="#" onclick="addCategory(event);" class="btn btn-outline-dark categoryButton "><i class="fas fa-plus"></i> Add Category</a>
     </div>
 </div>
 <br />
@@ -23,7 +22,7 @@
             <tr class="table-secondary">
                 <th>@Html.DisplayNameFor(m => m.Name)</th>
                 <th>Actions</th>
-             
+
             </tr>
 
             @foreach (var item in Model)
@@ -33,7 +32,7 @@
                         @Html.DisplayFor(m => item.Name)
                     </td>
                     <td>
-                       <partial name="_TableButtonPartial" model="item.Id" />
+                        <partial name="_TableButtonPartial" model="item.Id" />
                     </td>
                 </tr>
             }
@@ -45,3 +44,45 @@
         <p>No Category available !</p>
     }
 </div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="dash_modal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"></h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" id="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    var addCategory = function (e) {
+        e.preventDefault();
+        $('#modal-body').empty();
+        $.ajax({
+            type: 'GET',
+            url: '/admin/category/addcategory',
+            data: {},
+            dataType: 'html',
+            success: function (data) {
+                $('#modal-body').append(data);
+                $('h4.modal-title').html('Add Category');
+                $('#dash_modal').modal();
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        });
+    }
+</script>
