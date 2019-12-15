@@ -28,6 +28,7 @@ namespace Helmand.Areas.Admin.Controllers
         {
             _db = db;
             _webHostEnvironment = webHostEnvironment;
+
             MenuItemVM = new MenuItemViewModel()
             {
                 Category = _db.Category,

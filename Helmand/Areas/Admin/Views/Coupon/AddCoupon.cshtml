@@ -1,8 +1,53 @@
-﻿
+﻿@model Helmand.Models.Coupon
 @{
     ViewData["Title"] = "AddCoupon";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>AddCoupon</h1>
+<br />
+<br />
+
+<div class="panel-body content-form" style="width:600px; margin: auto">
+    <form asp-action="AddCoupon" method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger">  </div>
+        <div class="form-group">
+            <label asp-for="Name">Coupon Name:</label>
+            <div><span asp-validation-for="Name" class="text-danger"></span></div>
+            <input class="form-control" asp-for="Name" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Picture"></label>
+            <input class="form-control" asp-for="Name" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Name">Coupon Name:</label>
+            <div><span asp-validation-for="Name" class="text-danger"></span></div>
+            <input type="file" id="projectImage" name="files" multiple class="form-control" asp-for="Name" />
+        </div>
+        <div class="form-group">
+            <label asp-for="CouponType"></label>
+            <select asp-for="CouponType" asp-items="Html.GetEnumSelectList < Coupon.ECouponType>()" class="form-control"></select>
+        </div>
+        <div class="form-group">
+            <label asp-for="Discount"></label>
+            <div><span asp-validation-for="Discount" class="text-danger"></span></div>
+            <input class="form-control" asp-for="Discount" />
+        </div>
+        <div class="form-group">
+            <label asp-for="MinimumAmount"></label>
+            <div><span asp-validation-for="MinimumAmount" class="text-danger"></span></div>
+            <input class="form-control" asp-for="MinimumAmount" />
+        </div>
+        <div class="form-group">
+            <label asp-for="IsActive"></label>
+            <input class="form-control"  asp-for="IsActive" />
+        </div>
+        <button class="btn btn-dark" type="submit"><i class="fas fa-plus"></i> Add</button>
+        <a asp-action="Index" class="btn btn-dark">Cancel</a>
+    </form>
+</div>
+
+@section scripts{ 
+@{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
 

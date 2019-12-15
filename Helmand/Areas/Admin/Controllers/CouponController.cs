@@ -32,6 +32,13 @@ namespace Helmand.Areas.Admin.Controllers
         {
             if(ModelState.IsValid)
             {
+                //first checking if model state is valid we will fetch the file that was uploaded for the image
+                var files = HttpContext.Request.Form.Files;
+                if(files.Count>0)
+                {
+                    s
+                }
+               
                 _db.Coupon.Add(coupon);
                 await _db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
