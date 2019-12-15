@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Helmand.Data;
@@ -34,9 +35,20 @@ namespace Helmand.Areas.Admin.Controllers
             {
                 //first checking if model state is valid we will fetch the file that was uploaded for the image
                 var files = HttpContext.Request.Form.Files;
+                //if it is greater than zeros means the file is uploaded
                 if(files.Count>0)
                 {
-                    s
+                    //then will convert this to a stream of bytes to store it in the database
+                    byte[] p1 = null;
+                    using (var fs1 = files[0].OpenReadStream())
+                    {
+                        using (var ms1 = new MemoryStream())
+                        {
+                            fs1.CopyTo(ms1);
+                            p1 = ms1.ToArray();
+                        }
+                    }
+                    coupon.Picture = p1;
                 }
                
                 _db.Coupon.Add(coupon);
@@ -44,6 +56,23 @@ namespace Helmand.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(coupon);
+        }
+        //Editing Coupon
+
+        public async Task<IActionResult>EditCoupon(int ?id)
+        {
+            if (id==null)
+            {
+                return NotFound();
+            }
+            var coupon= await _db.Coupon.FirstOrDefaultAsync(c=>c.Id==id);
+            if (coupon==null)
+            {
+                return NotFound();
+            }
+            return View(coupon);
+
+
         }
     }
 }
