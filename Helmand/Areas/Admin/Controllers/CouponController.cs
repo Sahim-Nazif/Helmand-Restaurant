@@ -119,7 +119,7 @@ namespace Helmand.Areas.Admin.Controllers
 
         //Delete get
 
-        public async Task<IActionResult> deleteCoupon(int ?id)
+        public async Task<IActionResult> DeleteCoupon(int ?id)
         {
             if (id==null)
             {
@@ -135,6 +135,20 @@ namespace Helmand.Areas.Admin.Controllers
         }
 
         //Delete Post 
+        [HttpPost, ActionName("DeleteCoupon")]
+        public async Task<IActionResult> DeleteCouponPost(int ? id)
+        {
+            var getCoupons = await _db.Coupon.FindAsync(id);
+            if (getCoupons==null)
+            {
+                return View();
+            }
+
+
+            _db.Coupon.Remove(getCoupons);
+            await _db.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
 
     }
 }
