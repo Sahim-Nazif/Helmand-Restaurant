@@ -95,3 +95,7 @@ body {
     transition:0.3s;
     font-family:"Poppins", sans-serif;
 }
+.menu-filter-list li.is-checked, .menu-filter-list li:hover {
+    background-color: black;
+    color: white;
+}
