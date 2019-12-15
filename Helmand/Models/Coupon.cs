@@ -17,8 +17,10 @@ namespace Helmand.Models
         public enum ECouponType { Percent=0, Dollar=1 }
 
         [Required]
+        [DataType(DataType.Currency)]
         public double Discount { get; set; }
         [Required]
+        [DataType(DataType.Currency)]
         public double MinimumAmount { get; set; }
         //this time we will upload image to the database, no on the server
         public byte[] Picture { get; set; }
