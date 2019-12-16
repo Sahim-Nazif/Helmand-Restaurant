@@ -4,7 +4,7 @@
 <br />
 <br />
 
-@if(Model.Coupon.ToList().Count>0)
+@if (Model.Coupon.ToList().Count > 0)
 {
     <div class="border">
         <div class="carousel" data-ride="carousel" data-interval="2500">
@@ -42,18 +42,41 @@
 <br />
 <div class="container">
     <ul id="menu-filters" class="menu-filter-list list-inline text-center">
-        <li class="filter active btn btn-secondary ml-1 mr-1 ">Show All</li>
+        <li class="filter active btn btn-secondary ml-1 mr-1" data-filter=".menu-restaurant">Show All</li>
         @foreach (var item in Model.Category)
         {
-            <li class="filter ml-1 mr-1 ">@item.Name</li>
+            <li class="filter ml-1 mr-1 " data-filter=".@item.Name.Replace(" ", string.Empty)">@item.Name</li>
         }
     </ul>
-    @foreach(var category in Model.Category)
+    @foreach (var category in Model.Category)
     {
-    <div class="row" id="menu-wrapper">
-        <partial name="_ThumbnailAreaPartial" model="@Model.MenuItem.Where(u => u.Category.Name.Equals(category.Name))" />
-    </div>
-   
+        <div class="row" id="menu-wrapper">
+            <partial name="_ThumbnailAreaPartial" model="@Model.MenuItem.Where(u => u.Category.Name.Equals(category.Name))" />
+        </div>
+
     }
 </div>
 
+@section scripts{ 
+    <script src="https://code.jquery.com/jquery-3.4.1.js"
+            integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+            crossorigin="anonymous"></script>
+
+<script>
+    var posts =('.post');
+    (function ($) {
+
+        $("#menu-filters li").click(function () {
+            $('#menu-filters li').removeClass('active btn btn-secondary');
+            $(this).addClass('active btn btn-secondary');
+
+            var selectedFilter = $(this).data('filter');
+            $('.menu-restaurant').fadeOut();
+            setTimeout(function(){
+                $(selectedFilter).slideDown();
+            },300);
+        });
+    })(jQuery);
+
+</script>
+}
