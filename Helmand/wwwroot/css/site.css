@@ -99,3 +99,6 @@ body {
     background-color: black;
     color: white;
 }
+.register {
+    max-width:450px;
+}
