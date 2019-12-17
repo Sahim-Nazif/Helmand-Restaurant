@@ -9,6 +9,7 @@ namespace Helmand.Utility
     {
         public const string DefaultFoodImage = "default_food.png";
         //different roles for the user to be able to use the application
+        //these fields/properties will be accessed in Register Model
         public const string ManagerUser = "Manager";
         public const string KitchenUser = "Kitchen";
         public const string FrontDeskUser = "FrontDesk";
