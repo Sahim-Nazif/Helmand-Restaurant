@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using Helmand.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -25,6 +26,8 @@ namespace Helmand.Areas.Identity.Pages.Account
         private readonly IEmailSender _emailSender;
 
         private readonly RoleManager<IdentityRole> _roleManager;
+
+
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
@@ -90,7 +93,18 @@ namespace Helmand.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = Input.Email, Email = Input.Email };
+                var user = new ApplicationUser
+                { 
+                    UserName = Input.Email,
+                    Email = Input.Email,
+                    FirstName=Input.FirstName,
+                    LastName=Input.LastName,
+                    PhoneNumber=Input.PhoneNumber,
+                    StreetAddress=Input.StreetAddress,
+                    City=Input.City,
+                    Province=Input.Province,
+                    PostalCode=Input.PostalCode
+                };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
