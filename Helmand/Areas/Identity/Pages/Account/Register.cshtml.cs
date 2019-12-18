@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Helmand.Models;
+using Helmand.Utility;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -108,6 +109,24 @@ namespace Helmand.Areas.Identity.Pages.Account
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
+                    if(!await _roleManager.RoleExistsAsync(SD.CustomerEndUser))
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole(SD.CustomerEndUser));
+                    }
+                    if (!await _roleManager.RoleExistsAsync(SD.FrontDeskUser))
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole(SD.FrontDeskUser));
+                    }
+                    if (!await _roleManager.RoleExistsAsync(SD.KitchenUser))
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole(SD.KitchenUser));
+                    }
+                    if (!await _roleManager.RoleExistsAsync(SD.ManagerUser))
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole(SD.ManagerUser));
+                    }
+
+                    await _userManager.AddToRoleAsync(user, SD.ManagerUser);
                     _logger.LogInformation("User created a new account with password.");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -119,7 +138,8 @@ namespace Helmand.Areas.Identity.Pages.Account
                         protocol: Request.Scheme);
 
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                        $" Dear {user.FirstName} {user.LastName} Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>."
+                        + $"Thank You");
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
