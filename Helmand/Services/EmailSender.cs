@@ -14,3 +14,5 @@ namespace Helmand.Services
         }
     }
 }
+
+//https://docs.microsoft.com/en-us/aspnet/core/security/authentication/accconfirm?view=aspnetcore-3.1&tabs=visual-studio
