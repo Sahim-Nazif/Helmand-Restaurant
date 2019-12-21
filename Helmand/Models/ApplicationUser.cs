@@ -9,6 +9,7 @@ namespace Helmand.Models
 {
     public class ApplicationUser:IdentityUser
     {
+        [Display(Name="FirstName")]
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string StreetAddress { get; set; }
