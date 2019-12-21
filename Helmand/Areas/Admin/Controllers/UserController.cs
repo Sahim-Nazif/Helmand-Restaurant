@@ -1,18 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Helmand.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Helmand.Areas.Admin.Controllers
 {
     [Area("Admin")]
     public class UserController : Controller
     {
-
-        public IActionResult Index()
+        private readonly ApplicationDbContext _db;
+        public UserController(ApplicationDbContext db)
         {
-            return View();
+            _db = db;
+        }
+        public async Task<IActionResult> Index()
+        {
+            //here we want to return a list of all the user, except the current user who is loged in
+            //therefore we need to get the identity or user ID who is logged in. We can use ClaimsIdentity
+
+            var claimsIdentity = (ClaimsIdentity)this.User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            return View(await _db.ApplicationUser.Where(u => u.Id != claim.Value).ToListAsync());
         }
     }
 }
