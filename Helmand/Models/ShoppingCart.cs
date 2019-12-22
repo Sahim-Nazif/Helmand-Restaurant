@@ -25,7 +25,7 @@ namespace Helmand.Models
         public int MenuItemId { get; set; }
         [NotMapped]
         [ForeignKey(" MenuItemId")]
-        public MenuItem MenuItem { get; set; }
+        public virtual MenuItem MenuItem { get; set; }
 
         [Range(1,int.MaxValue,ErrorMessage="Please enter a value greater or equal to {1}")]
         public int Count { get; set; }

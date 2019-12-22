@@ -9,6 +9,7 @@ using Helmand.Models;
 using Helmand.Data;
 using Helmand.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Helmand.Controllers
 {
@@ -37,6 +38,18 @@ namespace Helmand.Controllers
             return View(IndexVM);
         }
 
+        [Authorize]
+        public async Task<IActionResult> Details(int id)
+        {
+            var MenuItemFromDb = await _db.MenuItem.Include(m => m.Category).Include(m => m.SubCategory).Where(m => m.Id == id)
+                .FirstOrDefaultAsync();
+            ShoppingCart cartObj = new ShoppingCart
+            {
+                MenuItem=MenuItemFromDb,
+                MenuItemId=MenuItemFromDb.Id
+            };
+            return View(cartObj);
+        }
         public IActionResult Privacy()
         {
             return View();
