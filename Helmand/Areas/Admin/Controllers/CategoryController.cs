@@ -4,11 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Helmand.Data;
 using Helmand.Models;
+using Helmand.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Helmand.Areas.Admin.Controllers
 {
+    [Authorize(Roles=SD.ManagerUser)]
     [Area("Admin")]
     public class CategoryController : Controller
     {

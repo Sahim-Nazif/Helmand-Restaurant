@@ -7,12 +7,14 @@ using Helmand.Data;
 using Helmand.Models;
 using Helmand.Models.ViewModels;
 using Helmand.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Helmand.Areas.Admin.Controllers
 {
+    [Authorize(Roles=SD.ManagerUser)]
     [Area("Admin")]
     public class MenuItemController : Controller
     {

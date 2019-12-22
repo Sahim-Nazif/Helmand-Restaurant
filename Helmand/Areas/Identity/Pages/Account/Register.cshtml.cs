@@ -127,14 +127,14 @@ namespace Helmand.Areas.Identity.Pages.Account
                     {
                         await _roleManager.CreateAsync(new IdentityRole(SD.ManagerUser));
                     }
-                    
+
                     if (role == SD.KitchenUser)
                     {
                         await _userManager.AddToRoleAsync(user, SD.KitchenUser);
                     }
                     else
                     {
-                        if(role==SD.FrontDeskUser)
+                        if (role == SD.FrontDeskUser)
                         {
                             await _userManager.AddToRoleAsync(user, SD.FrontDeskUser);
                         }
@@ -153,8 +153,8 @@ namespace Helmand.Areas.Identity.Pages.Account
                         }
 
                     }
-
-                   _logger.LogInformation("User created a new account with password.");
+                  
+                    _logger.LogInformation("User created a new account with password.");
 
                     //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     //code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
@@ -178,6 +178,7 @@ namespace Helmand.Areas.Identity.Pages.Account
 
                     return RedirectToAction("Index", "User", new { area = "Admin" });
                     //}
+                  
                 }
                 foreach (var error in result.Errors)
                 {

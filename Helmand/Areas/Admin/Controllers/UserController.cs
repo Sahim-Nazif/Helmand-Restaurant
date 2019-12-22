@@ -4,12 +4,15 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Helmand.Data;
+using Helmand.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Helmand.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles=SD.ManagerUser)]
     public class UserController : Controller
     {
         private readonly ApplicationDbContext _db;
@@ -39,7 +42,7 @@ namespace Helmand.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            applicationUser.LockoutEnd = DateTime.Now.AddMinutes(2);
+            applicationUser.LockoutEnd = DateTime.Now.AddMinutes(10);
             await _db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
