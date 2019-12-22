@@ -26,5 +26,22 @@ namespace Helmand.Areas.Admin.Controllers
             var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
             return View(await _db.ApplicationUser.Where(u => u.Id != claim.Value).ToListAsync());
         }
+        //here we use string id since it's guid in db
+        public async Task<IActionResult>Lock(string id)
+        {
+            if(id==null)
+            {
+                return NotFound();
+            }
+            var applicationUser = await _db.ApplicationUser.FirstOrDefaultAsync(m => m.Id == id);
+
+            if (applicationUser == null)
+            {
+                return NotFound();
+            }
+            applicationUser.LockoutEnd = DateTime.Now.AddYears(1000);
+            await _db.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
