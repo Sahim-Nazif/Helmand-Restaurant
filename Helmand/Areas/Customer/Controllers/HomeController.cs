@@ -10,6 +10,7 @@ using Helmand.Data;
 using Helmand.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Helmand.Controllers
 {
@@ -51,7 +52,33 @@ namespace Helmand.Controllers
             return View(cartObj);
         }
 
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Details(ShoppingCart CartObject)
+        {
+            CartObject.Id = 0;
+            if(ModelState.IsValid)
+            {
+                var claimsIdentity = (ClaimsIdentity)this.User.Identity;
+                var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+                CartObject.ApplicationUserId = claim.Value;
 
+                ShoppingCart cartFromDb = await _db.ShoppingCart.Where(c => c.ApplicationUserId == CartObject.ApplicationUserId
+                                          && c.MenuItemId == CartObject.MenuItemId).FirstOrDefaultAsync();
+                
+                //we will check here if this item is not added to cart-DB
+                if(cartFromDb==null)
+                {
+                   await _db.ShoppingCart.AddAsync(CartObject);
+                }
+                else
+                {
+                    cartFromDb.Count = cartFromDb.Count + CartObject.Count;
+                }
+                await _db.SaveChangesAsync();
+            }
+        }
 
         public IActionResult Privacy()
         {
