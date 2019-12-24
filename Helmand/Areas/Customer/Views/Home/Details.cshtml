@@ -1,0 +1,94 @@
+﻿@model Helmand.Models.ShoppingCart
+@using Helmand.Extensions
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<br />
+
+
+<h3 style="margin-bottom: 30px">Item Details</h3>
+<form  method="post" >
+    <div class="row">
+         <div asp-validation-summary="ModelOnly" class="text-danger"> </div>
+
+         <div class="col-8">
+             <div class="form-group row">
+                 <div class="col-4">
+                     <label asp-for="MenuItem.Name">Menu Item Name:</label>
+                 </div>
+                 <div class="col-8">
+                     <input class="form-control" readonly asp-for="MenuItem.Name" />
+                 </div>
+             </div>
+             <div class="form-group row">
+                 <div class="col-4">
+                     <label asp-for="MenuItem.Description">Description:</label>
+                 </div>
+                 <div class="col-8">
+                     @Html.Raw(Model.MenuItem.Description)
+                 </div>
+             </div>
+             <div class="form-group row">
+                 <div class="col-4">
+                     <label asp-for="MenuItem.Price">Price:</label>
+                 </div>
+                 <div class="col-8">
+                     <input class="form-control" readonly asp-for="MenuItem.Price" />
+                 </div>
+             </div>
+             <div class="form-group row">
+                 <div class="col-4">
+                     <label asp-for="MenuItem.CategoryId"></label>
+                 </div>
+                 <div class="col-8">
+                     <input class="form-control" readonly asp-for="MenuItem.Category.Name" />
+                 </div>
+             </div>
+             <div class="form-group row">
+                 <div class="col-4">
+                     <label asp-for="MenuItem.SubCategoryId"></label>
+                 </div>
+                 <div class="col-8">
+                     <input class="form-control" readonly asp-for="MenuItem.SubCategory.SubCName" />
+                 </div>
+             </div>
+             <div class="form-group row">
+                 <div class="col-4">
+                     <label asp-for="MenuItem.Spiciness"></label>
+                 </div>
+                 <div class="col-8">
+                     <select asp-for="MenuItem.Spiciness" readonly asp-items="Html.GetEnumSelectList<MenuItem.Espciy>()" class="form-control"></select>
+                 </div>
+
+             </div>
+             <div class="form-group row">
+                 <div class="col-4">
+                     <label asp-for="Count"></label>
+                 </div>
+                 <div class="col-8">
+                     <input class="form-control" readonly asp-for="Count" />
+                     <span asp-validation-for="Count" class="text-danger"></span>
+                 </div>
+             </div>
+             <div class="form-group row">
+                 <div class="col-4">
+                 </div>
+                 <div class="col-4">
+                     <button class="btn btn-dark form-control" value="Add to Cart" type="submit">Add To Cart</button>
+                 </div>
+                 <div class="col-4">
+                     <a asp-action="Index" class="btn btn-dark form-control">Back To List</a>
+                 </div>
+             </div>
+           </div>
+        <div class="col-3 offset-1">
+            <img src="@Model.MenuItem.Image" width="100%" style="border-radius:5px; border:1px solid #bbb9b9;" />
+        </div>
+
+   
+    </div>
+</form>
+
