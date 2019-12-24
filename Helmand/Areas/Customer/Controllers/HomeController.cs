@@ -50,6 +50,9 @@ namespace Helmand.Controllers
             };
             return View(cartObj);
         }
+
+
+
         public IActionResult Privacy()
         {
             return View();
