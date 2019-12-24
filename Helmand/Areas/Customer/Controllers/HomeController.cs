@@ -11,6 +11,7 @@ using Helmand.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 
 namespace Helmand.Controllers
 {
@@ -77,6 +78,23 @@ namespace Helmand.Controllers
                     cartFromDb.Count = cartFromDb.Count + CartObject.Count;
                 }
                 await _db.SaveChangesAsync();
+
+                //here we need to implement session to keep cart value throughout the logged in user/application
+                var count = _db.ShoppingCart.Where(c => c.ApplicationUserId == CartObject.ApplicationUserId).ToList().Count();
+                HttpContext.Session.SetInt32("startSessionCartCount", count);
+                return RedirectToAction(nameof(Index));
+            }
+            //if model state is not valid
+            else
+            {
+                var MenuItemFromDb = await _db.MenuItem.Include(m => m.Category).Include(m => m.SubCategory)
+                    .Where(m => m.Id ==CartObject.MenuItemId).FirstOrDefaultAsync();
+                ShoppingCart cartObj = new ShoppingCart
+                {
+                    MenuItem = MenuItemFromDb,
+                    MenuItemId = MenuItemFromDb.Id
+                };
+                return View(cartObj);
             }
         }
 
