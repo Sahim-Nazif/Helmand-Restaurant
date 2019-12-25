@@ -1,4 +1,6 @@
 ﻿@using Helmand.Utility
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -42,23 +44,32 @@
                                     <a class="dropdown-item" asp-action="Index" asp-controller="User" asp-area="Admin">User</a>
                                 </div>
                             </li>
+                        }
+                        @if (HttpContextAccessor.HttpContext.Session.GetInt32("startSessionCartCount") != null)
+                        {
+
                             <li class="nav-item">
-                                <a href="" class="nav-link">
-                                    <i class="fas fa-shopping-cart"></i>&nbsp;(0)
+                                <a href="#" class="nav-link">
+                                    @{
+                                        var count = HttpContextAccessor.HttpContext.Session.GetInt32("startSessionCartCount");
+                                    }
+                                    <i class="fas fa-shopping-cart"></i>&nbsp;(@count)
                                 </a>
                             </li>
+
+
                         }
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link " asp-area="" asp-controller="Home" asp-action="Privacy">PRIVACY</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="" class="nav-link">
-                                    <i class="fas fa-shopping-cart"></i>&nbsp;(0)
+                                <a href="#" class="nav-link">
+                                <i class="fas fa-shopping-cart"></i>&nbsp;(0)
                                 </a>
                             </li>
                         }
+                        <li class="nav-item">
+                            <a class="nav-link " asp-area="" asp-controller="Home" asp-action="Privacy">PRIVACY</a>
+                        </li>
 
                     </ul>
                 </div>

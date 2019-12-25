@@ -21,9 +21,8 @@ namespace Helmand.Models
         [NotMapped]
         [ForeignKey("ApplicationUserId")]
         public virtual ApplicationUser ApplicationUser { get; set; }
-
-        public int MenuItemId { get; set; }
         [NotMapped]
+        public int MenuItemId { get; set; }
         [ForeignKey(" MenuItemId")]
         public virtual MenuItem MenuItem { get; set; }
 

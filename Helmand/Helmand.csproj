@@ -5,6 +5,11 @@
     <UserSecretsId>aspnet-Helmand-7635CB9C-73F8-4F00-A7F8-C0F51D7859BF</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Data\Migrations\20191225171123_UpdateShoppingCart.cs" />
+    <Compile Remove="Data\Migrations\20191225171123_UpdateShoppingCart.Designer.cs" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.0.0" />
