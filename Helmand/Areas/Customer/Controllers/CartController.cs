@@ -5,11 +5,13 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Helmand.Data;
 using Helmand.Models.ViewModels;
+using Helmand.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Helmand.Areas.Customer.Controllers
 {
+    [Area("Customer")]
     public class CartController : Controller
     {
         private readonly ApplicationDbContext _db;
@@ -20,8 +22,7 @@ namespace Helmand.Areas.Customer.Controllers
             _db = db;
 
         }
-
-        
+       
         public async Task<IActionResult> Index()
         {
             OrderDetailsCartVM = new OrderDetailsCart()
@@ -30,7 +31,7 @@ namespace Helmand.Areas.Customer.Controllers
             };
 
 
-            //in order to calculate the shopping cart total, we to set initialize it to zero
+            //in order to calculate the shopping cart total, will initialize OrderTotal to zero
 
             OrderDetailsCartVM.OrderHeader.OrderTotal = 0;
 
@@ -39,8 +40,31 @@ namespace Helmand.Areas.Customer.Controllers
 
             var cart = _db.ShoppingCart.Where(c => c.ApplicationUserId == claim.Value);
 
+            if (cart != null)
+            {
+                OrderDetailsCartVM.listCart = cart.ToList();
+            }
+            // to calculate the order total
 
-            return View();
+            foreach (var list in OrderDetailsCartVM.listCart)
+            {
+                list.MenuItem = await _db.MenuItem.FirstOrDefaultAsync(m=>m.Id==list.MenuItemId);
+
+                OrderDetailsCartVM.OrderHeader.OrderTotal = OrderDetailsCartVM.OrderHeader.OrderTotal + (list.MenuItem.Price * list.Count);
+                 list.MenuItem.Description = SD.ConvertToRawHtml(list.MenuItem.Description);
+
+                if (list.MenuItem.Description.Length>100)
+                {
+                    list.MenuItem.Description = list.MenuItem.Description.Substring(0, 99) + "...";
+                }
+            }
+            OrderDetailsCartVM.OrderHeader.OrderTotalOriginal = OrderDetailsCartVM.OrderHeader.OrderTotal;
+
+            return View(OrderDetailsCartVM);
+        }
+        public IActionResult AddCoupon()
+        {
+
         }
     }
 }

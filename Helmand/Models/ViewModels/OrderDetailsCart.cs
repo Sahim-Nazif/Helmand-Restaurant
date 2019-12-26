@@ -7,7 +7,7 @@ namespace Helmand.Models.ViewModels
 {
     public class OrderDetailsCart
     {
-        public IEnumerable<ShoppingCart>listCart { get; set; }
+        public List<ShoppingCart>listCart { get; set; }
         public OrderHeader OrderHeader { get; set; }
     }
 }
