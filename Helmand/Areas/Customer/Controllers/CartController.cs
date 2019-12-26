@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Helmand.Data;
 using Helmand.Models.ViewModels;
 using Helmand.Utility;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -60,11 +61,25 @@ namespace Helmand.Areas.Customer.Controllers
             }
             OrderDetailsCartVM.OrderHeader.OrderTotalOriginal = OrderDetailsCartVM.OrderHeader.OrderTotal;
 
+            if (HttpContext.Session.GetString(SD.ssCouponCode) != null)
+            {
+                OrderDetailsCartVM.OrderHeader.CouponCode = HttpContext.Session.GetString(SD.ssCouponCode);
+                var couponFromDb = await _db.Coupon.Where(c => c.Name.ToLower() == OrderDetailsCartVM.OrderHeader.CouponCode.ToLower()).FirstOrDefaultAsync();
+                OrderDetailsCartVM.OrderHeader.OrderTotal = SD.DiscountedPrice(couponFromDb, OrderDetailsCartVM.OrderHeader.OrderTotalOriginal);
+
+            }
+
             return View(OrderDetailsCartVM);
         }
         public IActionResult AddCoupon()
         {
+            if(OrderDetailsCartVM.OrderHeader.CouponCode==null)
+            {
+                OrderDetailsCartVM.OrderHeader.CouponCode = "";
 
+            }
+            HttpContext.Session.SetString(SD.ssCouponCode, OrderDetailsCartVM.OrderHeader.CouponCode);
+            return RedirectToAction(nameof(Index));
         }
     }
 }
