@@ -23,7 +23,7 @@ namespace Helmand.Areas.Customer.Controllers
             _db = db;
 
         }
-       
+
         public async Task<IActionResult> Index()
         {
             OrderDetailsCartVM = new OrderDetailsCart()
@@ -49,12 +49,12 @@ namespace Helmand.Areas.Customer.Controllers
 
             foreach (var list in OrderDetailsCartVM.listCart)
             {
-                list.MenuItem = await _db.MenuItem.FirstOrDefaultAsync(m=>m.Id==list.MenuItemId);
+                list.MenuItem = await _db.MenuItem.FirstOrDefaultAsync(m => m.Id == list.MenuItemId);
 
                 OrderDetailsCartVM.OrderHeader.OrderTotal = OrderDetailsCartVM.OrderHeader.OrderTotal + (list.MenuItem.Price * list.Count);
-                 list.MenuItem.Description = SD.ConvertToRawHtml(list.MenuItem.Description);
+                list.MenuItem.Description = SD.ConvertToRawHtml(list.MenuItem.Description);
 
-                if (list.MenuItem.Description.Length>100)
+                if (list.MenuItem.Description.Length > 100)
                 {
                     list.MenuItem.Description = list.MenuItem.Description.Substring(0, 99) + "...";
                 }
@@ -73,7 +73,7 @@ namespace Helmand.Areas.Customer.Controllers
         }
         public IActionResult AddCoupon()
         {
-            if(OrderDetailsCartVM.OrderHeader.CouponCode==null)
+            if (OrderDetailsCartVM.OrderHeader.CouponCode == null)
             {
                 OrderDetailsCartVM.OrderHeader.CouponCode = "";
 
@@ -83,9 +83,55 @@ namespace Helmand.Areas.Customer.Controllers
         }
         public IActionResult RemoveCoupon()
         {
-            
+
             HttpContext.Session.SetString(SD.ssCouponCode, string.Empty);
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Plus(int cartId)
+        {
+            var cart = await _db.ShoppingCart.FirstOrDefaultAsync(c => c.Id == cartId);
+            cart.Count += 1;
+            await _db.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Minus(int cartId)
+        {
+            var cart = await _db.ShoppingCart.FirstOrDefaultAsync(c => c.Id == cartId);
+
+            if (cart.Count == 1)
+            {
+                _db.ShoppingCart.Remove(cart);
+                await _db.SaveChangesAsync();
+
+                //here will remove from the session
+                var count = _db.ShoppingCart.Where(u => u.ApplicationUserId == cart.ApplicationUserId).ToList().Count;
+                HttpContext.Session.SetInt32("startSessionCartCount", count);
+
+            }
+            else
+            {
+                cart.Count -= 1;
+                await _db.SaveChangesAsync();
+
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult>Remove(int cartId)
+        {
+            var cart = await _db.ShoppingCart.FirstOrDefaultAsync(c => c.Id == cartId);
+
+            _db.ShoppingCart.Remove(cart);
+            await _db.SaveChangesAsync();
+
+            //here will remove from the session
+            var count = _db.ShoppingCart.Where(u => u.ApplicationUserId == cart.ApplicationUserId).ToList().Count;
+            HttpContext.Session.SetInt32("startSessionCartCount", count);
+
+            return RedirectToAction(nameof(Index));
+
         }
     }
 }
