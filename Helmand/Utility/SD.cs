@@ -18,6 +18,20 @@ namespace Helmand.Utility
 
         public const string ssCouponCode = "ssCouponCode";
 
+        //order status
+        public const string StatuSubmitted = "Submitted";
+        public const string StatusInProcess = "Being Prepared";
+        public const string StatusRead= "Ready for Pickup";
+        public const string StatuCompleted = "Completed";
+        public const string StatuCancelled = "Cancelled";
+
+        public const string PaymentStatusPending= "Pending";
+        public const string PaymentStatusApproved = "Approved";
+        public const string PaymentStatusRejected = "Rejected";
+      
+
+
+
         public static string ConvertToRawHtml(string source)
         {
             char[] array = new char[source.Length];

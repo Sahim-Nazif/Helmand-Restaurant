@@ -5,7 +5,6 @@
 
 
 
-
 const placeOrderBtn = document.querySelector('.btnPlaceOrder');
 
 
@@ -16,23 +15,23 @@ placeOrderBtn.addEventListener('click', function () {
     const date = document.getElementById('datepicker').value;
     const time = document.getElementById('timepicker').value;
 
-    if (name.toString() == '') {
+    if (name.toString() === '') {
         alert("Your name is required");
         return false;
     }
 
     else {
-        if (phone.toString() == '') {
+        if (phone.toString() === '') {
             alert("Please insert your phone number");
             return false;
         }
         else {
-            if (date.toString() == '') {
+            if (date.toString() === '') {
                 alert("Please enter a date");
-                return false;
+                return false; 
             }
             else {
-                if (time.toString() == '') {
+                if (time.toString() === '') {
                     alert("Please select time");
                     return false;
                 }
