@@ -122,6 +122,80 @@ namespace Helmand.Areas.Customer.Controllers
 
             return View(OrderDetailsCartVM);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ActionName("Summary")]
+        public async Task<IActionResult> SummaryPost()
+        {
+            //in order to calculate the shopping cart total, will initialize OrderTotal to zero
+
+
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            
+            //here we need to modify the cart and here we get the shopping cart
+            OrderDetailsCartVM.listCart = await _db.ShoppingCart.Where(c => c.ApplicationUserId == claim.Value).ToListAsync();
+
+            OrderDetailsCartVM.OrderHeader.PaymentStatus =SD.PaymentStatusPending;
+            OrderDetailsCartVM.OrderHeader.OrderDate =DateTime.Now;
+            OrderDetailsCartVM.OrderHeader.UserId = claim.Value;
+            OrderDetailsCartVM.OrderHeader.Status = SD.PaymentStatusPending;
+            OrderDetailsCartVM.OrderHeader.PickUpTime =Convert.ToDateTime(OrderDetailsCartVM.OrderHeader.PickUpDate.ToShortDateString() + "  " +OrderDetailsCartVM.OrderHeader.PickUpTime.ToShortTimeString());
+
+
+            //here will create a list of order details in DB
+            List<OrderDetails> orderDetailsList = new List<OrderDetails>();
+            _db.OrderHeader.Add(OrderDetailsCartVM.OrderHeader);
+
+            await _db.SaveChangesAsync();
+
+
+            foreach (var item in OrderDetailsCartVM.listCart)
+            {
+                item.MenuItem = await _db.MenuItem.FirstOrDefaultAsync(m => m.Id == item.MenuItemId);
+                OrderDetails orderDetails = new OrderDetails
+                {
+                    MenuItemId = item.MenuItemId,
+                    OrderId = OrderDetailsCartVM.OrderHeader.Id,
+                    Description = item.MenuItem.Description,
+                    Name = item.MenuItem.Name,
+                    Price = item.MenuItem.Price,
+                    Count=item.Count
+
+                };
+                OrderDetailsCartVM.OrderHeader.OrderTotalOriginal+= orderDetails.Count * orderDetails.Price;
+                _db.OrderDetail.Add(orderDetails);
+                
+               
+            }
+
+
+            if (HttpContext.Session.GetString(SD.ssCouponCode) != null)
+            {
+                OrderDetailsCartVM.OrderHeader.CouponCode = HttpContext.Session.GetString(SD.ssCouponCode);
+                var couponFromDb = await _db.Coupon.Where(c => c.Name.ToLower() == OrderDetailsCartVM.OrderHeader.CouponCode.ToLower()).FirstOrDefaultAsync();
+                OrderDetailsCartVM.OrderHeader.OrderTotal = SD.DiscountedPrice(couponFromDb, OrderDetailsCartVM.OrderHeader.OrderTotalOriginal);
+
+            }
+            //here if no coupon was used
+            else
+            {
+                OrderDetailsCartVM.OrderHeader.OrderTotal = OrderDetailsCartVM.OrderHeader.OrderTotalOriginal;
+            }
+            OrderDetailsCartVM.OrderHeader.CouponCodeDiscount = OrderDetailsCartVM.OrderHeader.OrderTotalOriginal - OrderDetailsCartVM.OrderHeader.OrderTotal;
+
+     
+            //here once everthing is added to DB, will have to remove these items from shopping cart and set session to zero
+            _db.ShoppingCart.RemoveRange(OrderDetailsCartVM.listCart);
+            HttpContext.Session.SetInt32("startSessionCartCount", 0);
+            await _db.SaveChangesAsync();
+
+
+            return RedirectToAction("Confirm", "Order",new { id = OrderDetailsCartVM.OrderHeader.Id });
+        }
+
+
         public IActionResult AddCoupon()
         {
             if (OrderDetailsCartVM.OrderHeader.CouponCode == null)
