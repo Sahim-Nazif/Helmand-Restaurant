@@ -14,6 +14,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Helmand.Services;
+using Helmand.Utility;
+using Stripe;
 
 namespace Helmand
 {
@@ -38,6 +40,9 @@ namespace Helmand
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
              services.AddSingleton<IEmailSender, EmailSender>();
+
+            //stripe-- note StripesSettings is the class added in Utility Folder
+            services.Configure<StripeSettings>(Configuration.GetSection("Stripe"));
 
             services.AddControllersWithViews();
             services.AddRazorPages().AddRazorRuntimeCompilation();
@@ -68,6 +73,8 @@ namespace Helmand
             app.UseStaticFiles();
 
             app.UseRouting();
+      
+            StripeConfiguration.ApiKey = Configuration.GetSection("Stripe")["SecretKey"];
             app.UseSession();
 
             app.UseAuthentication();

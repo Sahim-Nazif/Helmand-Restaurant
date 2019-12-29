@@ -22,6 +22,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.0.0" />
+    <PackageReference Include="Stripe.net" Version="34.9.0" />
   </ItemGroup>
 
 

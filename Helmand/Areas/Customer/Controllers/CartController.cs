@@ -10,6 +10,7 @@ using Helmand.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 
 namespace Helmand.Areas.Customer.Controllers
 {
@@ -126,7 +127,7 @@ namespace Helmand.Areas.Customer.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ActionName("Summary")]
-        public async Task<IActionResult> SummaryPost()
+        public async Task<IActionResult> SummaryPost(string stripeToken)
         {
             //in order to calculate the shopping cart total, will initialize OrderTotal to zero
 
@@ -191,8 +192,41 @@ namespace Helmand.Areas.Customer.Controllers
             HttpContext.Session.SetInt32("startSessionCartCount", 0);
             await _db.SaveChangesAsync();
 
+            var options = new ChargeCreateOptions
+            {
+                Amount = Convert.ToInt32(OrderDetailsCartVM.OrderHeader.OrderTotal * 100),
+                Currency = "usd",
+                Description = "Order ID :" + OrderDetailsCartVM.OrderHeader.Id,
+                Source = stripeToken
 
-            return RedirectToAction("Confirm", "Order",new { id = OrderDetailsCartVM.OrderHeader.Id });
+            };
+
+            var service = new ChargeService();
+            Charge charge = service.Create(options);
+
+            if(charge.BalanceTransactionId==null)
+            {
+                OrderDetailsCartVM.OrderHeader.Status = SD.PaymentStatusRejected;
+            }
+            else
+            {
+                OrderDetailsCartVM.OrderHeader.TransactionId = charge.BalanceTransactionId;
+            }
+
+            if (charge.Status.ToLower()=="succeeded")
+            {
+                OrderDetailsCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusApproved;
+                OrderDetailsCartVM.OrderHeader.Status = SD.StatusSubmitted;
+            }
+            else
+            {
+                OrderDetailsCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusRejected;
+            }
+
+            await _db.SaveChangesAsync();
+            return RedirectToAction("Index", "Home");
+
+            //return RedirectToAction("Confirm", "Order",new { id = OrderDetailsCartVM.OrderHeader.Id });
         }
 
 

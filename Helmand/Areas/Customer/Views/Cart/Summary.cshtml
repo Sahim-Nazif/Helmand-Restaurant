@@ -1,4 +1,9 @@
 ﻿@model Helmand.Models.ViewModels.OrderDetailsCart
+@using Microsoft.Extensions.Options
+
+@*here we are inject stripe-settings to our page*@
+
+@inject IOptions<Helmand.Utility.StripeSettings> Stripe
 @{
     ViewData["Title"] = "Summary";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -112,6 +117,25 @@
                 <div class="card-footer">
                     <div class="row">
                         <div class="col-12 col-md-4 offset-md-8">
+                            @*here will multiply orderTotal by hundred to convert it to cents*@
+                            @{
+                                var OrderTotalForStripe = Model.OrderHeader.OrderTotal * 100;
+
+                            }
+                            <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                                    data-key="@Stripe.Value.PublishableKey"
+                                    data-amount="@OrderTotalForStripe"
+                                    data-name="Helmand Restaurant"
+                                    data-label="Place Order"
+                                    data-description="Culture Food."
+                                    data-locale="auto"
+                                    data-allow-remember-me="false"
+                                  >
+                            </script>
+                            <script>
+                                document.getElementsByClassName('stripe-button-el')[0].style.display="none";
+                             
+                            </script>
                             <button type="submit" id="" value="place Order" class="btn btn-warning form-control btnPlaceOrder">Place Order</button>
                         </div>
                     </div>

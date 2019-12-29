@@ -19,11 +19,11 @@ namespace Helmand.Utility
         public const string ssCouponCode = "ssCouponCode";
 
         //order status
-        public const string StatuSubmitted = "Submitted";
+        public const string StatusSubmitted = "Submitted";
         public const string StatusInProcess = "Being Prepared";
         public const string StatusRead= "Ready for Pickup";
-        public const string StatuCompleted = "Completed";
-        public const string StatuCancelled = "Cancelled";
+        public const string StatusCompleted = "Completed";
+        public const string StatusCancelled = "Cancelled";
 
         public const string PaymentStatusPending= "Pending";
         public const string PaymentStatusApproved = "Approved";
