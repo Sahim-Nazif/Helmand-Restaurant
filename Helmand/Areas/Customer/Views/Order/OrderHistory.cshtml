@@ -48,8 +48,8 @@
             <td>
                 @Html.DisplayFor(m => item.OrderDetails.Count)
             </td>
-            <td><a asp-action="OrderDetails" asp-controller="Order" class="btn btn-outline-dark">
-                    <i class="fas fa-stream"></i>Details</a></td>
+            <td> 
+                <button type="submit" class="btn btn-outline-dark anchorDetail" data-id="@item.OrderHeader.Id" data-toggle="modal"><i class="fas fa-stream"></i> Details</button>                    </td>
            
         </tr>
             }
@@ -62,3 +62,55 @@
     }
 </div>
 
+
+<div class="modal" id="myModal" tabindex="1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog-centered modal-dialog" role="document">
+        <div class="modal-header">
+            <div class="modal-header bg-warning text-light justify-content-center">
+                <h5 class="modal-title">Order Details</h5>
+            </div>
+
+            <div  class="modal-body justify-content-center" id="orderModalContent">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dark" style="width:20%" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+<script>
+    var PostBackUrl = '/Customer/Order/GetOrderDetails';
+
+    $(function () {
+
+        $(".anchorDetail").click(function () {
+
+            var $buttonClicked = $(this);
+            var id = $buttonClicked.attr('data-id');
+
+            $.ajax({
+                type: "GET",
+                url: PostBackUrl,
+                contentType: "application/json; charset=utf-8",
+                data: { "Id": id },
+                cache: false,
+                datatype: "json",
+                success: function (data) {
+                    $('#orderModalContent').html(data);
+                    $('#myModal').modal('show');
+                },
+
+                error: function () {
+                    alert("Dynamic content load failed")
+                }
+
+
+            });
+
+        });
+    }) 
+</script>
+}

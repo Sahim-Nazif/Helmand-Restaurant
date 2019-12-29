@@ -75,8 +75,8 @@ namespace Helmand.Areas.Customer.Controllers
                   OrderDetails = await _db.OrderDetail.Where(m => m.OrderId == Id).ToListAsync()
             };
             orderDetailsViewModel.OrderHeader.Application = await _db.ApplicationUser.FirstOrDefaultAsync(u => u.Id == orderDetailsViewModel.OrderHeader.UserId);
-          
-            return PartialView("_IndividualOrderDetails",orderDetailsViewModel)
+
+            return PartialView("_IndividualOrderDetails", orderDetailsViewModel);
         }
     }
 }
