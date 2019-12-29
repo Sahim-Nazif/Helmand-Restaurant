@@ -224,9 +224,9 @@ namespace Helmand.Areas.Customer.Controllers
             }
 
             await _db.SaveChangesAsync();
-            return RedirectToAction("Index", "Home");
+            //return RedirectToAction("Index", "Home");
 
-            //return RedirectToAction("Confirm", "Order",new { id = OrderDetailsCartVM.OrderHeader.Id });
+            return RedirectToAction("Confirm", "Order",new { id = OrderDetailsCartVM.OrderHeader.Id });
         }
 
 
