@@ -1,0 +1,64 @@
+﻿@model IEnumerable<Helmand.Models.ViewModels.OrderDetailsViewModel>
+@{
+    ViewData["Title"] = "OrderHistory";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<br />
+<div class="row">
+    <div class="col-6">
+        <h3 class="text-info"> Order History</h3>
+    </div>
+    
+</div>
+<br />
+<div>
+    @if (Model.Count() > 0)
+    {
+        <table class="table table-bordered">
+            <tr class="table-secondary">
+                <th>@Html.DisplayNameFor(m => m.OrderHeader.Id)</th>
+                <th>@Html.DisplayNameFor(m => m.OrderHeader.PickupName)</th>
+                <th>@Html.DisplayNameFor(m => m.OrderHeader.Application.Email)</th>
+                <th>@Html.DisplayNameFor(m => m.OrderHeader.PickUpTime)</th>
+                <th>@Html.DisplayNameFor(m => m.OrderHeader.OrderTotal)</th>
+                <th>Total Items</th>
+                <th>Action</th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+        <tr>
+            <td>
+                @Html.DisplayFor(m => item.OrderHeader.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(m => item.OrderHeader.PickupName)
+            </td>
+            <td>
+                @Html.DisplayFor(m => item.OrderHeader.Application.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(m => item.OrderHeader.PickUpTime)
+            </td>
+            <td>
+                @Html.DisplayFor(m => item.OrderHeader.OrderTotal)
+            </td>
+            <td>
+                @Html.DisplayFor(m => item.OrderDetails.Count)
+            </td>
+            <td><a asp-action="OrderDetails" asp-controller="Order" class="btn btn-outline-dark">
+                    <i class="fas fa-stream"></i>Details</a></td>
+           
+        </tr>
+            }
+
+        </table>
+    }
+    else
+    {
+        <p>No Category available !</p>
+    }
+</div>
+
