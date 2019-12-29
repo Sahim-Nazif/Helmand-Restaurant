@@ -293,28 +293,6 @@ namespace Helmand.Areas.Customer.Controllers
             return RedirectToAction(nameof(Index));
 
         }
-        //order History
-        [Authorize]
-        public async Task<IActionResult> OrderHistory()
-        {
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-
-            List<OrderDetailsViewModel> orderList = new List<OrderDetailsViewModel>();
-
-            List<OrderHeader> OrderHeaderList = await _db.OrderHeader.Include(o => o.Application).Where(u => u.UserId == claim.Value).ToListAsync();
-
-            foreach (OrderHeader item in OrderHeaderList)
-            {
-                OrderDetailsViewModel individual = new OrderDetailsViewModel
-                {
-                    OrderHeader = item,
-                    OrderDetails = await _db.OrderDetail.Where(o => o.OrderId == item.Id).ToListAsync()
-                };
-                orderList.Add(individual);
-            }
-
-            return View(orderList);
-        }
+ 
     }
 }
