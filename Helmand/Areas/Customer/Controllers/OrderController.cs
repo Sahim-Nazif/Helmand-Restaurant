@@ -164,7 +164,7 @@ namespace Helmand.Areas.Customer.Controllers
 
         //Order Pickup
         [Authorize]
-        public async Task<IActionResult> OrderPickup(int productPage = 1)
+        public async Task<IActionResult> OrderPickup(int productPage = 1, string searchEmail=null, string searchName = null, string searchPhone = null)
         {
             //var claimsIdentity = (ClaimsIdentity)User.Identity;
             //var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
@@ -178,19 +178,64 @@ namespace Helmand.Areas.Customer.Controllers
             StringBuilder param = new StringBuilder();
             param.Append("/Customer/Order/OrderHistory? productPage=:");
 
-            //here will need the order status -- ready for pickup
-
-            List<OrderHeader> OrderHeaderList = await _db.OrderHeader.Include(o => o.Application).Where(u => u.Status==SD.StatusReady).ToListAsync();
-
-            foreach (OrderHeader item in OrderHeaderList)
+            param.Append("&searchName=");
+            if (searchName != null)
             {
-                OrderDetailsViewModel individual = new OrderDetailsViewModel
-                {
-                    OrderHeader = item,
-                    OrderDetails = await _db.OrderDetail.Where(o => o.OrderId == item.Id).ToListAsync()
-                };
-                orderListVM.Orders.Add(individual);
+                param.Append(searchName);
             }
+
+            param.Append("&searchPhone=");
+            if (searchPhone != null)
+            {
+                param.Append(searchPhone);
+            }
+            param.Append("&searchEmail=");
+            if (searchEmail != null)
+            {
+                param.Append(searchEmail);
+            }
+
+            if (searchName!=null || searchEmail!=null || searchPhone != null)
+            {
+                var user = new ApplicationUser();
+                List<OrderHeader> OrderHeaderList = new List<OrderHeader>();
+
+                if (searchName != null)
+                {
+                    OrderHeaderList = await _db.OrderHeader.Include(o => o.Application)
+                                             .Where(u => u.PickupName.ToLower().Contains(searchName.ToLower()))
+                                             .OrderByDescending(o => o.OrderDate).ToListAsync();
+                }
+                else
+                {
+                    if (searchEmail != null)
+                    {
+                        user = await _db.ApplicationUser.Where(u => u.Email.ToLower().Contains(searchEmail.ToLower())).FirstOrDefaultAsync();
+
+                        //OrderHeaderList = await _db.OrderHeader.Include(o => o.Application)
+                        //                         .Where(u =>u.Application.Email.ToLower().Contains(searchEmail.ToLower()))
+                        //                         .OrderByDescending(o => o.OrderDate).ToListAsync();
+                    }
+                }
+            }
+            else
+            {
+
+                List<OrderHeader> OrderHeaderList = await _db.OrderHeader.Include(o => o.Application).Where(u => u.Status == SD.StatusReady).ToListAsync();
+
+                foreach (OrderHeader item in OrderHeaderList)
+                {
+                    OrderDetailsViewModel individual = new OrderDetailsViewModel
+                    {
+                        OrderHeader = item,
+                        OrderDetails = await _db.OrderDetail.Where(o => o.OrderId == item.Id).ToListAsync()
+                    };
+                    orderListVM.Orders.Add(individual);
+                }
+
+            }
+
+            //here will need the order status -- ready for pickup
 
             var count = orderListVM.Orders.Count;
             orderListVM.Orders = orderListVM.Orders.OrderByDescending(p => p.OrderHeader.Id)
