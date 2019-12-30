@@ -21,7 +21,7 @@ namespace Helmand.Utility
         //order status
         public const string StatusSubmitted = "Submitted";
         public const string StatusInProcess = "Being Prepared";
-        public const string StatusRead= "Ready for Pickup";
+        public const string StatusReady= "Ready for Pickup";
         public const string StatusCompleted = "Completed";
         public const string StatusCancelled = "Cancelled";
 
