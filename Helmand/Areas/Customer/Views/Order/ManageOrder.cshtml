@@ -42,6 +42,7 @@
                                     }
 
                                 }
+                              
                                 <textarea asp-for="@item.OrderHeader.Comments" readonly class="rounded border form-control" style="width:335px; height:75px;"></textarea>
                             </div>
                             <div class="col-3 offset-1 d-flex align-content-center">
@@ -76,7 +77,11 @@
                 </div>
             }
         </div>
-    }
+     }
+      else
+     {
+       <p>No Order available !</p>
+     }
 </form>
 
 

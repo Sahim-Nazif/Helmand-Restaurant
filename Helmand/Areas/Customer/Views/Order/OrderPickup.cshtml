@@ -4,7 +4,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-    <form method="post">
+    <form method="get">
 
 
         <br />
@@ -72,7 +72,7 @@
                                 @Html.DisplayFor(m => item.OrderDetails.Count)
                             </td>
                             <td>
-                                <button type="submit" class="btn btn-outline-dark anchorDetail" data-id="@item.OrderHeader.Id" data-toggle="modal"><i class="fas fa-stream"></i> Details</button>
+                                <button type="button" class="btn btn-outline-dark anchorDetail" data-id="@item.OrderHeader.Id" data-toggle="modal"><i class="fas fa-stream"></i> Details</button>
                             </td>
 
                         </tr>
@@ -89,7 +89,7 @@
                 <p>No  Order available for Pickup !</p>
             }
         </div>
-
+    </form>
 
         <div class="modal" id="myModal" tabindex="1" role="dialog" aria-hidden="true">
             <div class="modal-dialog-centered modal-dialog" role="document">
@@ -108,7 +108,7 @@
             </div>
         </div>
 
-    </form>
+
 @section scripts {
     <script>
     var PostBackUrl = '/Customer/Order/GetOrderDetails';

@@ -6,7 +6,7 @@
     For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 *@
 
-<form method="post">
+<form asp-action="OrderPickup" asp-controller="Order" asp-route-orderId="@Model.OrderHeader.Id" method="post">
     <div style="padding-top:80px;max-width:100%">
         <div class="container row border ml-1">
             <div class="col-lg-8 col-12" style="border-right:1px solid #bbbb9b">
@@ -68,7 +68,7 @@
                     <span class="badge badge-secondary badge-fill">@Model.OrderHeader.Id</span>
                 </h4>
                 <ul class="list-group mb-3">
-                    
+
                     @foreach (var details in Model.OrderDetails)
                     {
                         <li class="list-group-item d-flex justify-content-between">
@@ -77,26 +77,35 @@
                                 <small class="text-muted">Quantity: @details.Count</small>
                             </div>
                             <span class="text-muted">@(details.Price * details.Count)</span>
-                         
+
                         </li>
                     }
-                    @if(Model.OrderHeader.CouponCode!=null)
+                    @if (Model.OrderHeader.CouponCode != null)
                     {
                         <li class="list-group-item d-flex justify-content-between">
                             <div class="text-success">
                                 <h6 class="my-0">Promo Code</h6>
                                 <small>@Model.OrderHeader.CouponCode</small>
                             </div>
-                            <span class="text-success">@(Model.OrderHeader.OrderTotalOriginal-Model.OrderHeader.OrderTotal)</span>
-                         
+                            <span class="text-success">@(Model.OrderHeader.OrderTotalOriginal - Model.OrderHeader.OrderTotal)</span>
+
                         </li>
                     }
-                      <li class="list-group d-flex justify-content-between bg-light">
-                          <span class="text-info">Total (CA)</span>
-                          <strong class="text-info">$@Model.OrderHeader.OrderTotal</strong>
-                      </li>
+                    <li class="list-group d-flex justify-content-between bg-light">
+                        <span class="text-info">Total (CA)</span>
+                        <strong class="text-info">$@Model.OrderHeader.OrderTotal</strong>
+                    </li>
                 </ul>
-                <button  type="submit" disabled class="btn btn-info form-control">@Model.OrderHeader.Status</button>
+                @if (Model.OrderHeader.Status.Equals(SD.StatusReady) && (User.IsInRole(SD.ManagerUser) || (User.IsInRole(SD.FrontDeskUser))))
+                {
+                    <button type="submit" class="btn btn-success form-control"><i class="far fa-thumbs-up"></i>Confirm Pickup</button>
+                }
+                else
+                {
+                    <button type="submit" class="btn btn-info form-control">@Model.OrderHeader.Status</button>
+                }
+
+
             </div>
 
         </div>

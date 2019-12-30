@@ -46,7 +46,7 @@
                                 </div>
                             </li>
                         }
-                        @if (User.IsInRole(SD.ManagerUser) || User.IsInRole(SD.CustomerEndUser))
+                        @if (User.IsInRole(SD.ManagerUser) || User.IsInRole(SD.CustomerEndUser) ||User.IsInRole(SD.FrontDeskUser))
                         {
 
 

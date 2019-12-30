@@ -195,10 +195,12 @@ namespace Helmand.Areas.Customer.Controllers
                 param.Append(searchEmail);
             }
 
-            if (searchName!=null || searchEmail!=null || searchPhone != null)
+            List<OrderHeader> OrderHeaderList = new List<OrderHeader>();
+
+            if (searchName != null || searchEmail != null || searchPhone != null)
             {
                 var user = new ApplicationUser();
-                List<OrderHeader> OrderHeaderList = new List<OrderHeader>();
+
 
                 if (searchName != null)
                 {
@@ -212,17 +214,26 @@ namespace Helmand.Areas.Customer.Controllers
                     {
                         user = await _db.ApplicationUser.Where(u => u.Email.ToLower().Contains(searchEmail.ToLower())).FirstOrDefaultAsync();
 
-                        //OrderHeaderList = await _db.OrderHeader.Include(o => o.Application)
-                        //                         .Where(u =>u.Application.Email.ToLower().Contains(searchEmail.ToLower()))
-                        //                         .OrderByDescending(o => o.OrderDate).ToListAsync();
+                        OrderHeaderList = await _db.OrderHeader.Include(o => o.Application)
+                                                 .Where(o => o.UserId == user.Id)
+                                                 .OrderByDescending(o => o.OrderDate).ToListAsync();
+                    }
+                    else
+                    {
+                        if (searchPhone != null)
+                        {
+                            OrderHeaderList = await _db.OrderHeader.Include(o => o.Application)
+                                                     .Where(u => u.PhoneNumber.Contains(searchName))
+                                                     .OrderByDescending(o => o.OrderDate).ToListAsync();
+                        }
                     }
                 }
             }
             else
             {
 
-                List<OrderHeader> OrderHeaderList = await _db.OrderHeader.Include(o => o.Application).Where(u => u.Status == SD.StatusReady).ToListAsync();
-
+                OrderHeaderList = await _db.OrderHeader.Include(o => o.Application).Where(u => u.Status == SD.StatusReady).ToListAsync();
+            }
                 foreach (OrderHeader item in OrderHeaderList)
                 {
                     OrderDetailsViewModel individual = new OrderDetailsViewModel
@@ -233,7 +244,6 @@ namespace Helmand.Areas.Customer.Controllers
                     orderListVM.Orders.Add(individual);
                 }
 
-            }
 
             //here will need the order status -- ready for pickup
 
@@ -252,6 +262,17 @@ namespace Helmand.Areas.Customer.Controllers
 
 
             return View(orderListVM);
+        }
+
+        [Authorize (Roles =SD.FrontDeskUser + "," + SD.ManagerUser)]
+        [HttpPost]
+        [ActionName("OrderPickup")]
+        public async Task<IActionResult> OrderPickupPost(int orderId)
+        {
+            OrderHeader orderHeader = await _db.OrderHeader.FindAsync(orderId);
+            orderHeader.Status = SD.StatusCompleted;
+            await _db.SaveChangesAsync();
+            return RedirectToAction("OrderPickup", "Order");
         }
     }
 }
