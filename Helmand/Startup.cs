@@ -43,6 +43,8 @@ namespace Helmand
 
             //stripe-- note StripesSettings is the class added in Utility Folder
             services.Configure<StripeSettings>(Configuration.GetSection("Stripe"));
+            services.Configure<EmailOptions>(Configuration);
+        
 
             services.AddControllersWithViews();
             services.AddRazorPages().AddRazorRuntimeCompilation();
