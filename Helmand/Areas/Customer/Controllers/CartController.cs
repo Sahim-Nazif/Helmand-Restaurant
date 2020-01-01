@@ -136,10 +136,11 @@ namespace Helmand.Areas.Customer.Controllers
         {
             //in order to calculate the shopping cart total, will initialize OrderTotal to zero
 
-
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            
+
+            var user = new ApplicationUser();
+
             //here we need to modify the cart and here we get the shopping cart
             OrderDetailsCartVM.listCart = await _db.ShoppingCart.Where(c => c.ApplicationUserId == claim.Value).ToListAsync();
 
@@ -220,6 +221,13 @@ namespace Helmand.Areas.Customer.Controllers
 
             if (charge.Status.ToLower()=="succeeded")
             {
+
+                //send email for order success
+
+                await _emailSender.SendEmailAsync(_db.Users.Where(u => u.Id == claim.Value)
+                    .FirstOrDefault().Email,"Helmand - Order Created "+ OrderDetailsCartVM.OrderHeader.Id.ToString(),"Hi Mr/Mrs" + user.FirstName + " Your Order has been submitted successfully !");
+
+
                 OrderDetailsCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusApproved;
                 OrderDetailsCartVM.OrderHeader.Status = SD.StatusSubmitted;
             }

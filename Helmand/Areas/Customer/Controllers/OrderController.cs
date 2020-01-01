@@ -9,6 +9,7 @@ using Helmand.Models;
 using Helmand.Models.ViewModels;
 using Helmand.Utility;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,12 +19,14 @@ namespace Helmand.Areas.Customer.Controllers
     public class OrderController : Controller
     {
         private readonly ApplicationDbContext _db;
+        private readonly IEmailSender _emailSender;
 
         private int PageSize = 2;
 
-        public OrderController(ApplicationDbContext db)
+        public OrderController(ApplicationDbContext db, IEmailSender emailSender)
         {
             _db = db;
+            _emailSender = emailSender;
         }
 
         [Authorize]
@@ -147,9 +150,17 @@ namespace Helmand.Areas.Customer.Controllers
             orderHeader.Status = SD.StatusReady;
             await _db.SaveChangesAsync();
 
+
             //Email logic to notify user that order is ready for pickup
+
+            await _emailSender.SendEmailAsync(_db.Users.Where(u => u.Id == orderHeader.UserId)
+                    .FirstOrDefault().Email, "Helmand - Order Ready " + orderHeader.Id.ToString(),
+                    "Hi there your order is ready for pickup !");
+
             return RedirectToAction("ManageOrder", "Order");
         }
+
+
 
         [Authorize(Roles = SD.KitchenUser + "," + SD.ManagerUser)]
         public async Task<IActionResult> OrderCancel(int OrderId)
@@ -157,6 +168,14 @@ namespace Helmand.Areas.Customer.Controllers
             OrderHeader orderHeader = await _db.OrderHeader.FindAsync(OrderId);
             orderHeader.Status = SD.StatusCancelled;
             await _db.SaveChangesAsync();
+
+
+            await _emailSender.SendEmailAsync(_db.Users.Where(u => u.Id == orderHeader.UserId)
+                    .FirstOrDefault().Email, "Helmand - Order Cancelled " + orderHeader.Id.ToString(),
+                    "Hi there your order has been cancelled successfully !");
+
+
+
             return RedirectToAction("ManageOrder", "Order");
         }
 
@@ -272,6 +291,10 @@ namespace Helmand.Areas.Customer.Controllers
             OrderHeader orderHeader = await _db.OrderHeader.FindAsync(orderId);
             orderHeader.Status = SD.StatusCompleted;
             await _db.SaveChangesAsync();
+
+            await _emailSender.SendEmailAsync(_db.Users.Where(u => u.Id == orderHeader.UserId)
+                    .FirstOrDefault().Email, "Helmand - Order Completed " + orderHeader.Id.ToString(),
+                    "Hi there your order has been completed successfully !");
             return RedirectToAction("OrderPickup", "Order");
         }
     }
